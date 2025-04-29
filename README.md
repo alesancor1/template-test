@@ -54,3 +54,11 @@ To build your rock, simply run the following command from the directory containi
 ```bash
 rockcraft pack
 ```
+
+## Sync with template
+
+A `makefile` is provided to sync the repository with the latest template changes. To do so, simply run:
+
+```bash
+make sync-with-template
+```

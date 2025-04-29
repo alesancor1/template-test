@@ -29,7 +29,7 @@ Check GitHub's documentation on [creating a repository from a template](https://
 This template comes with a basic setup to get you started. Here's what you need to customize:
 
 - **`rockcraft.yaml`**: This is the main configuration file where you define your rock's properties like name, version, description, dependencies, etc.
-- **`SECURITY.md`**: Set the security policy for the rocks inside this repository. 
+- **`SECURITY.md.template`**: Set the security policy for the rocks inside this repository. Needs to be renamed to `SECURITY.md`
 - **`CODEOWNERS`**: Specify who are the owner(s) of this code.
 
 ## Directory Structure
@@ -37,14 +37,14 @@ This template comes with a basic setup to get you started. Here's what you need 
 Here's an overview of the directory structure of the repository:
 
 ```
-rocks/				            # Directory containing all rocks and its versions
-  └─ rock1/			            # Directory containing all versions of a single rock
-     └─ v1			            # Directory containing the rock project file for a version
-        └─ rockcraft.yaml	      # Rock project file
+rocks/                        # Directory containing all rocks and its versions
+  └─ my-rock/                 # Directory containing all versions of a single rock
+     └─ 0.1                   # Directory containing the rock project file for a version
+        └─ rockcraft.yaml     # Rock project file
 .gitignore
-CODEOWNERS		   	            # Specify who are the authors. Useful for notifications
-README.md			            # Top level document containing this specification
-SECURITY.md			            # File explaining how to report a vulnerability
+CODEOWNERS                    # Specify who are the authors. Useful for notifications
+README.md                     # Top level document containing this specification
+SECURITY.md.template          # File explaining how to report a vulnerability
 ```
 
 ## Building the Rock

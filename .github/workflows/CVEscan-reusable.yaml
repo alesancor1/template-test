@@ -69,7 +69,7 @@ jobs:
 
   test-vulnerabilities:
     name: "test-vulnerabilities ${{ inputs.oci-image-name != '' && format('| {0}', inputs.oci-image-name) || ' '}}"
-    uses: ./.github/workflows/Test-Rock.yaml
+    uses: canonical/oci-factory/.github/workflows/Test-Rock.yaml@main
     needs: [configure-scan]
     with:
       oci-archive-name: ${{ needs.configure-scan.outputs.oci-image }}

@@ -39,11 +39,7 @@ jobs:
       arch-map: ${{ needs.get-runners.outputs.arch-map }}
 
   test:
-    needs: [tag-rocks, build, build-internal]
-    if: |
-      always() && needs.tag-rocks.result == 'success' &&
-      (needs.build-internal.result == 'success' && needs.build.result == 'skipped') ||
-      (needs.build-internal.result == 'skipped' && needs.build.result == 'success')
+    needs: [tag-rocks, build]
     strategy:
       matrix:
         rock: ${{ fromJSON(needs.tag-rocks.outputs.json_result) }}

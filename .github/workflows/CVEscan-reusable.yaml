@@ -12,10 +12,6 @@ on:
         description: 'Path to the image in OCI Factory (eg. "oci/foo")'
         required: false
         type: string
-      trivyignore-path:
-        description: 'Path to the .trivygnore file'
-        required: false
-        type: string
       date-last-scan:
         description: "If there are new CVEs after this date, we notify"
         required: false
@@ -73,7 +69,7 @@ jobs:
     with:
       oci-archive-name: ${{ needs.configure-scan.outputs.oci-image }}
       test-vulnerabilities: true # just incase we set this to false by default in the future
-      trivyignore-path: ${{ inputs.trivyignore-path }}
+      trivyignore-path: ${{ inputs.oci-image-path }}/.trivyignore
       test-black-box: false
       test-efficiency: false
       test-malware: false

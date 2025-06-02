@@ -48,8 +48,7 @@ jobs:
 
       - id: configure
         run: |
-          oci_filename="$(echo "${{ inputs.oci-image-name }}" \
-            | sed 's/ghcr.io\/canonical\/oci-factory\///g' | tr ':' '_')"
+          oci_filename="$(basename "${{ inputs.oci-image-name }}" | tr ':' '_')"
 
           echo "oci-filename=$oci_filename" >> "$GITHUB_OUTPUT"
           echo "report-filename=${oci_filename}${{ env.VULNERABILITY_REPORT_SUFFIX }}" >> "$GITHUB_OUTPUT"

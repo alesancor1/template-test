@@ -29,6 +29,7 @@ Check GitHub's documentation on [creating a repository from a template](https://
 This template comes with a basic setup to get you started. Here's what you need to customize:
 
 - **`rockcraft.yaml`**: This is your rock's [recipe](https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/)! Adjust its contents, as well as its parent directories' names according to your rock's name and version.
+- **`task.yaml`**: This is your tests' file, it contains the required instructions written in bash for your rock to be tested using [spread](https://github.com/canonical/spread).
 - **`SECURITY.md.template`**: Edit the template with your repo's details and set the security policy by renaming this file to `SECURITY.md`.
 - **`CODEOWNERS`**: Optional, but recommended. Read more about [CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
 
@@ -37,9 +38,14 @@ This template comes with a basic setup to get you started. Here's what you need 
 Here's an overview of the directory structure of the repository:
 
 ```
-my-rock/                      # Directory containing all versions of a single rock
-   └─ 0.1                     # Directory containing the rock project file for a specific version
+my-rock-name/                 # Directory containing all versions of a single rock
+   └─ 0.1/                    # Directory containing the rock project file for a specific version
       └─ rockcraft.yaml       # Rock project file
+      └─ spread.yaml          # Spread test configuration
+      └─ spread/              # Spread tests directory
+         └─ .extension        # Functions used internally by spread tests
+         └─ general/test/     # Directory containing tests
+            └─ task.yaml      # Test file
 .gitignore
 CODEOWNERS                    
 README.md                     # Top level document containing this specification

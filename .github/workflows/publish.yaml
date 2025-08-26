@@ -25,8 +25,22 @@ jobs:
           else
             echo 'arch-map={"amd64":["ubuntu-24.04"],"arm64":["ubuntu-24.04-arm"]}' >> $GITHUB_OUTPUT
           fi
+  
+  read-config:
+    runs-on: ubuntu-latest
+    outputs:
+      ghcr_upload: ${{ steps.read-config.outputs.ghcr_upload }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
+      - name: Read .github/ci.yaml with yq
+        id: read-config
+        run: |
+          value=$(yq '.ghcr.upload' .github/ci.yaml)
+          echo "ghcr_upload=${value}" >> $GITHUB_OUTPUT
 
+          
   # Why do we need this duplicate job and reusable Build-Rock workflow?
   # - the Build-Rock wf may need an an environment setup that relies on an internal action
   #   - to call an internal action, the repo must also be internal/private
@@ -80,10 +94,11 @@ jobs:
       host-github-token: ${{ secrets.GITHUB_TOKEN }}
 
   upload:
-    needs: [tag-rocks, test]
+    needs: [tag-rocks, test, read-config]
     if: |
       github.event_name == 'push' &&
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/main' &&
+      needs.read-config.outputs.ghcr_upload == 'true'
     strategy:
       matrix:
         rock: ${{ fromJSON(needs.tag-rocks.outputs.json_result) }}

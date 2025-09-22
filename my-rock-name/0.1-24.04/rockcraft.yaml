@@ -1,10 +1,10 @@
 # TODO - edit this file to customize your container’s behavior and contents.
 
 name: my-rock-name
-# see https://documentation.ubuntu.com/rockcraft/en/1.11.0/explanation/bases/
+# see https://documentation.ubuntu.com/rockcraft/en/1.13.0/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
 base: ubuntu@24.04 # the base environment for this rock
-version: '0.2' # just for humans. Semantic versioning is recommended
+version: '0.1' # just for humans. Semantic versioning is recommended
 summary: Single-line elevator pitch for your amazing rock # 79 char long summary
 description: |
     This is my-rock-name's description. You have a paragraph or two to tell the
@@ -17,5 +17,3 @@ platforms: # the platforms this rock should be built on and run on
 parts:
     my-part:
         plugin: nil
-        stage-packages:
-            - hello

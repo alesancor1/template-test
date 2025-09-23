@@ -47,7 +47,7 @@ jobs:
       fail-fast: false
       matrix:
         rock: ${{ fromJSON(needs.tag-rocks.outputs.json_result) }}
-    uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@ROCKS-2306/pro-suppport
+    uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@b53cbddade3139db15222e2e9034de1c0cfb3c6e
     with:
       rock-repo: ${{ github.repository }}
       rock-repo-commit: ${{ github.head_ref || github.ref_name }}

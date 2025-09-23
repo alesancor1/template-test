@@ -1,4 +1,4 @@
-summary: test the 'my-rock-name' project
+summary: test the 'normal-rock' project
 
 execute: |
-  echo "Put your test code here"
+  docker run --rm normal-rock:0.1 exec zstdcat /var/lib/chisel/manifest.wall | jq -r 'select(.kind == "package" and .name == "hello") | .version' | grep 2.10-3build1

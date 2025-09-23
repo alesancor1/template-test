@@ -1,0 +1,4 @@
+summary: test the 'pro-rock' project
+
+execute: |
+  docker run --rm pro-rock:0.1 exec zstdcat /var/lib/chisel/manifest.wall | jq -r 'select(.kind == "package" and .name == "hello") | .version' | grep esm

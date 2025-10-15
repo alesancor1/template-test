@@ -38,12 +38,17 @@ This template comes with a basic setup to get you started. Here's what you need 
 Here's an overview of the directory structure of the repository:
 
 ```
+.github/
+   |─ ...
+   └─ ci.yaml                 # CI configuration file
+
+
 my-rock-name/                 # Directory containing all versions of a single rock
    └─ 0.1/                    # Directory containing the rock project file for a specific version
-      └─ rockcraft.yaml       # Rock project file
-      └─ spread.yaml          # Spread test configuration
+      |─ rockcraft.yaml       # Rock project file
+      |─ spread.yaml          # Spread test configuration
       └─ spread/              # Spread tests directory
-         └─ .extension        # Functions used internally by spread tests
+         |─ .extension        # Functions used internally by spread tests
          └─ general/test/     # Directory containing tests
             └─ task.yaml      # Test file
 .gitignore
@@ -68,4 +73,28 @@ A `Makefile` is provided to sync the repository with the latest template changes
 
 ```bash
 make sync-with-template
+```
+
+## Override the behavior of the CI
+
+The behavior of the CI is configured in `.github/ci.yaml`, which defines the following parameters:
+
+| Property | Required | Type | Description |
+|---|---|---|---|
+| ghcr | True | Dict[str, bool] | The configuration regarding the GHCR. |
+| ghcr.upload | True | bool | Whether the images should be uploaded to GHCR after successful build and test. |
+| ghcr.cve-scan | True | bool | Whether the continuous vulnerability scanning cron workflow should be run. When set to `true`, `ghcr.upload` should also be `true`. |
+| images | True | List[Any] | The list of images to be built, tested and uploaded. |
+| images.*.directory | True | str | The directory to the `rockcraft.yaml` file. A quoted asterisk symbol `'*'` matches all the directories that contains a `rockcraft.yaml` file within this repo. |
+
+
+### Example Configuration
+Here is an example configuration that builds all the images within the repository, uploads them to GHCR and enables the CVE scan cron workflow:
+
+```yaml
+ghcr:
+  upload: true
+  cve-scan: true
+images:
+   - directory: '*'
 ```

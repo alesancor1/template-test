@@ -29,3 +29,11 @@ images:
   #   registries:
   #     - docker.io
   #     - rocksdev-ecr-public
+
+  ## Example of specifying pro-services to build the rock with
+  # - directory: "my-rock-name/0.1-24.04"
+  #   pro-services:
+  #     - esm-apps
+  #     - esm-infra
+  #   registries:
+  #     ...

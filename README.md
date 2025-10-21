@@ -92,6 +92,7 @@ The behavior of the CI is configured in `.github/ci.yaml`, which defines the fol
 | registries.\<name\>.auth[0].config | True | Dict[str, str] | The configuration of the corresponding authentication method. See [below](#registry-authentication-configuration) for details. |
 | images | True | List[Any] | The list of images to be built, tested and uploaded. |
 | images.*.directory | True | str | The directory to the `rockcraft.yaml` file. A quoted asterisk symbol `'*'` matches all the directories that contain a `rockcraft.yaml` file within this repo. |
+| images.*.pro-services | True | Optional[List[str]] | The list of pro services to build the rock with. Requires the `UBUNTU_PRO_TOKEN` secret to be created in the repository. |
 | images.*.registries | True | Optional[List[str]] | The list of additional registries (defined in `registries`) to which the image should be published. |
 
 

@@ -48,7 +48,8 @@ jobs:
 
   upload-registries:
     needs: [read-config, test]
-    if: needs.read-config.outputs.upload-matrix != '[]'
+    if: |
+      needs.read-config.outputs.upload-matrix != '{"include": []}'
     strategy:
       matrix: ${{ fromJSON(needs.read-config.outputs.upload-matrix) }}
       fail-fast: false

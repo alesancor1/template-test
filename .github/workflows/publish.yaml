@@ -30,13 +30,13 @@ jobs:
       github.event.workflow_run.conclusion == 'success' &&
       needs.read-config.outputs.ghcr-upload == 'true'
     strategy:
-      matrix: ${{ fromJSON(needs.read-config.outputs.build-matrix) }}
+      matrix: ${{ fromJSON(needs.read-config.outputs.upload-matrix) }}
       fail-fast: false
     permissions:
       packages: write
     steps:
       - name: Upload Rock to GHCR
-        if: github.event.repository.visibility != "public" || !matrix.pro-services
+        if: github.event.repository.visibility != "public" || !matrix.pro-enabled
         uses: canonical/oci-factory/.github/actions/upload-rock@main
         with:
           artifact_name: ${{ matrix.artifact-name }}

@@ -48,13 +48,7 @@ jobs:
 
   upload-registries:
     needs: [read-config, test]
-    # Note: the !cancelled() is required to workaround the job being skipped
-    # due to a skipped job in the indirect dependency chain:
-    # https://github.com/orgs/community/discussions/25224
-    if: |
-      github.event_name != 'pull_request' && !cancelled() && !failure() &&
-      github.ref == 'refs/heads/main' &&
-      needs.read-config.outputs.upload-matrix != '[]'
+    if: needs.read-config.outputs.upload-matrix != '[]'
     strategy:
       matrix: ${{ fromJSON(needs.read-config.outputs.upload-matrix) }}
       fail-fast: false

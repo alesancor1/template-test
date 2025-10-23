@@ -36,7 +36,7 @@ jobs:
       packages: write
     steps:
       - name: Upload Rock to GHCR
-        if: github.event.repository.visibility != "public" || !matrix.pro-enabled
+        if: ${{ github.event.repository.visibility != "public" || !matrix.pro-enabled }}
         uses: canonical/oci-factory/.github/actions/upload-rock@main
         with:
           artifact_name: ${{ matrix.artifact-name }}
@@ -47,7 +47,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
   upload-registries:
-    needs: [read-config, test]
+    needs: [read-config]
     if: |
       needs.read-config.outputs.upload-matrix != '{"include": []}'
     strategy:

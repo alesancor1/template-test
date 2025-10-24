@@ -45,10 +45,13 @@ jobs:
           registry: ghcr.io/${{ github.repository }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-registries:
     needs: [read-config]
     if: |
+      github.event.workflow_run.conclusion == 'success' &&
       needs.read-config.outputs.upload-matrix != '{"include": []}'
     strategy:
       matrix: ${{ fromJSON(needs.read-config.outputs.upload-matrix) }}
@@ -79,6 +82,8 @@ jobs:
           registry: ${{ matrix.registry-uri }}
           username: AWS
           password: ${{ steps.get-ecr-token.outputs.aws-session-token }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Rock to Registry
         uses: canonical/oci-factory/.github/actions/upload-rock@main
@@ -90,4 +95,6 @@ jobs:
           registry: ${{ matrix.registry-uri }}
           username: ${{ secrets[matrix.registry-auth-username] }}
           password: ${{ secrets[matrix.registry-auth-password] }}
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 

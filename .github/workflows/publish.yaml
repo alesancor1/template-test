@@ -1,4 +1,4 @@
-name: Publish Rocks to GHCR
+name: Publish Rocks
 
 on:
   workflow_run:
@@ -38,7 +38,7 @@ jobs:
       contents: read
     steps:
       - name: Upload Rock to GHCR
-        if: ${{ github.event.repository.visibility != "public" || !matrix.pro-enabled }}
+        if: ${{ github.event.repository.visibility != 'public' || !matrix.pro-enabled }}
         uses: canonical/oci-factory/.github/actions/upload-rock@main
         with:
           artifact_name: ${{ matrix.artifact-name }}

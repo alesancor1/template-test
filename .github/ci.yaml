@@ -14,5 +14,7 @@ registries:
 
 images:
   - directory: "my-rock-name/0.1-24.04"
+    pro-services:
+      - esm-apps
     registries:
       - docker.io

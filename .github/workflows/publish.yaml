@@ -34,6 +34,8 @@ jobs:
       fail-fast: false
     permissions:
       packages: write
+      actions: read
+      contents: read
     steps:
       - name: Upload Rock to GHCR
         if: ${{ github.event.repository.visibility != "public" || !matrix.pro-enabled }}

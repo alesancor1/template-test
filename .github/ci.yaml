@@ -1,4 +1,18 @@
 version: 1
 ghcr:
   upload: true
-  continuous-security-scanning: true
+  cve-scan: false
+
+registries:
+  docker.io:
+    uri: docker.io/alesancor1
+    auth:
+      - method: basic
+        config:
+          username: secrets.DOCKERHUB_USERNAME          # @@@@@@ DO NOT PUT ACTUAL CREDENTIALS HERE @@@@@@
+          password: secrets.DOCKERHUB_TOKEN             # @@@@@@ DO NOT PUT ACTUAL CREDENTIALS HERE @@@@@@
+
+images:
+  - directory: "my-rock-name/0.1-24.04"
+    registries:
+      - docker.io

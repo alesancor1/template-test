@@ -1,0 +1,76 @@
+name: Build Rocks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+
+  read-config:
+    runs-on: ubuntu-latest
+    outputs:
+      ghcr-upload: ${{ steps.read-ci-config.outputs.ghcr-upload }}
+      ghcr-cve-scan: ${{ steps.read-ci-config.outputs.ghcr-cve-scan }}
+      build-matrix: ${{ steps.read-ci-config.outputs.build-matrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Read .github/ci.yaml
+        id: read-ci-config
+        uses: canonical/rocks-template-actions/actions/read-ci-config@5c472bd27b40d5da5022b4ae0de28101b809e9da
+
+  get-runners:
+    runs-on: ubuntu-latest
+    outputs:
+      arch-map: ${{ steps.set-map.outputs.arch-map }}
+    steps:
+      - id: set-map
+        run: |
+          if [[ "${{ github.repository_owner }}" == "canonical" ]]; then
+            echo 'arch-map={"amd64":["noble","X64","large"],"arm64":["noble","ARM64","large"]}' >> $GITHUB_OUTPUT
+          else
+            echo 'arch-map={"amd64":["ubuntu-24.04"],"arm64":["ubuntu-24.04-arm"]}' >> $GITHUB_OUTPUT
+          fi
+
+  check-pro-rocks:
+    needs: read-config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for Pro rocks in matrix
+        run: |
+          matrix='${{ needs.read-config.outputs.build-matrix }}'
+          visibility='${{ github.event.repository.visibility }}'
+
+          # Use jq to check if any 'pro-services' array is non-empty
+          has_pro=$(echo "$matrix" | jq '[.include[] | select(.["pro-services"] != null and (.["pro-services"] | length > 0))] | length')
+
+          if [ "$has_pro" -gt 0 ] && [ "$visibility" = 'public' ]; then
+            echo "::error::This repository is public but defines one or more pro-enabled rocks."
+          fi
+
+  build:
+    needs: [get-runners, read-config, check-pro-rocks]
+    if: github.event.repository.visibility == 'public'
+    strategy:
+      matrix: ${{ fromJSON(needs.read-config.outputs.build-matrix) }}
+    uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@main
+    with:
+      rock-repo: ${{ github.repository }}
+      rock-repo-commit: ${{ github.head_ref || github.ref_name }}
+      rockfile-directory: ${{ matrix.directory }}
+      oci-archive-name: ${{ matrix.artifact-name }}
+      arch-map: ${{ needs.get-runners.outputs.arch-map }}
+      rockcraft-test: ${{ matrix.run-tests }}
+
+  test:
+    needs: [read-config, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.read-config.outputs.build-matrix) }}
+    uses: canonical/oci-factory/.github/workflows/Test-Rock.yaml@main
+    with:
+      oci-archive-name: ${{ matrix.artifact-name }}

@@ -50,6 +50,7 @@ jobs:
 
           if [ "$has_pro" -gt 0 ] && [ "$visibility" = 'public' ]; then
             echo "::error::This repository is public but defines one or more pro-enabled rocks."
+            exit 1
           fi
 
   # Why do we need this duplicate job and reusable Build-Rock workflow?

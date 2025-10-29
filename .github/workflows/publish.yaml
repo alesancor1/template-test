@@ -21,7 +21,7 @@ jobs:
 
       - name: Read .github/ci.yaml
         id: read-ci-config
-        uses: canonical/rocks-template-actions/actions/read-ci-config@v1   
+        uses: canonical/rocks-template-actions/actions/read-ci-config@v1
 
   upload-ghcr:
     needs: [read-config]

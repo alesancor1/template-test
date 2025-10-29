@@ -8,8 +8,18 @@ on:
       - completed
 
 jobs:
+  check-status:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.workflow_run.conclusion != 'success'
+    steps:
+      - run: |
+          echo "::error::Build workflow did not success. Cannot publish."
+          exit 1
+
   read-config:
     runs-on: ubuntu-latest
+    needs: [check-status]
     outputs:
       ghcr-upload: ${{ steps.read-ci-config.outputs.ghcr-upload }}
       ghcr-cve-scan: ${{ steps.read-ci-config.outputs.ghcr-cve-scan }}
@@ -27,7 +37,6 @@ jobs:
     needs: [read-config]
     runs-on: ubuntu-latest
     if: |
-      github.event.workflow_run.conclusion == 'success' &&
       needs.read-config.outputs.ghcr-upload == 'true'
     strategy:
       matrix: ${{ fromJSON(needs.read-config.outputs.build-matrix) }}
@@ -53,7 +62,6 @@ jobs:
   upload-registries:
     needs: [read-config]
     if: |
-      github.event.workflow_run.conclusion == 'success' &&
       needs.read-config.outputs.upload-matrix != '{"include": []}'
     strategy:
       matrix: ${{ fromJSON(needs.read-config.outputs.upload-matrix) }}

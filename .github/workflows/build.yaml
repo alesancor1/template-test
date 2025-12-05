@@ -72,7 +72,7 @@ jobs:
       pro-services: ${{ matrix.pro-services }}
     secrets:
       pro-token: ${{ secrets.UBUNTU_PRO_TOKEN }}
-      
+
 
   test:
     needs: [read-config, build]

@@ -22,19 +22,6 @@ jobs:
         id: read-ci-config
         uses: canonical/rocks-template-actions/actions/read-ci-config@v1
 
-      - name: Check for Pro rocks in matrix
-        run: |
-          matrix='${{ steps.read-ci-config.outputs.build-matrix }}'
-          visibility='${{ github.event.repository.visibility }}'
-
-          # Use jq to check if any 'pro-services' array is non-empty
-          has_pro=$(echo "$matrix" | jq '[.include[] | select(.["pro-services"] != null and (.["pro-services"] | length > 0))] | length')
-
-          if [ "$has_pro" -gt 0 ] && [ "$visibility" = 'public' ]; then
-            echo "::error::This repository is public but defines one or more pro-enabled rocks."
-            exit 1
-          fi
-
   get-runners:
     runs-on: ubuntu-latest
     outputs:
@@ -82,6 +69,10 @@ jobs:
       oci-archive-name: ${{ matrix.artifact-name }}
       arch-map: ${{ needs.get-runners.outputs.arch-map }}
       rockcraft-test: ${{ matrix.run-tests }}
+      pro-services: ${{ matrix.pro-services }}
+    secrets:
+      pro-token: ${{ secrets.UBUNTU_PRO_TOKEN }}
+      
 
   test:
     needs: [read-config, build]
@@ -97,3 +88,5 @@ jobs:
     uses: canonical/oci-factory/.github/workflows/Test-Rock.yaml@main
     with:
       oci-archive-name: ${{ matrix.artifact-name }}
+    secrets:
+      pro-token: ${{ secrets.UBUNTU_PRO_TOKEN }}

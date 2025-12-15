@@ -37,9 +37,9 @@ jobs:
       - name: Warn about GHCR pro rock upload
         if: |
           steps.read-ci-config.outputs.ghcr-upload == 'true' &&
-          contains(steps.read-ci-config.outputs.upload-matrix, 'pro-services')
+          contains(steps.read-ci-config.outputs.build-matrix, 'pro-services')
         run: |
-          echo "::warning::GHCR does not support private/pro rocks. Ensure you have other registries in upload-matrix to upload pro rocks."
+          echo "::warning::Pro Rocks will not be uploaded to GHCR for public repositories. Please ensure you have alternative registries configured in the upload-matrix."
 
   upload-ghcr:
     needs: [read-config]

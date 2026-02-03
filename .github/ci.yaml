@@ -23,6 +23,7 @@ registries:
 
 images:
   - directory: "my-rock-name/0.1-24.04"
+  - directory: "my-rock-name/0.1-24.04-esm"
     pro-services:
       - esm-apps
       - esm-infra

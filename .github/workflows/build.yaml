@@ -72,6 +72,7 @@ jobs:
       pro-services: ${{ matrix.pro-services }}
     secrets:
       pro-token: ${{ secrets.UBUNTU_PRO_TOKEN }}
+      pro-artifact-passphrase: test
 
 
   test:
@@ -89,4 +90,5 @@ jobs:
     with:
       oci-archive-name: ${{ matrix.artifact-name }}
     secrets:
-      pro-token: ${{ secrets.UBUNTU_PRO_TOKEN }}
+      pro-artifact-passphrase: test
+

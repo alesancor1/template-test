@@ -24,9 +24,10 @@ registries:
 images:
   - directory: "my-rock-name/0.1-24.04"
   - directory: "my-rock-name/0.1-24.04-esm"
-    pro-services:
-      - esm-apps
-      - esm-infra
+    pro:
+      services:
+        - esm-apps
+        - esm-infra
 
   ## Example of specifying different registries for a specific rock
   # - directory: "my-rock-name/0.1-24.04"

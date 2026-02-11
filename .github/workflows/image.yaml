@@ -107,14 +107,15 @@ jobs:
 
       - name: Upload Rock to GHCR
         if: ${{ github.event.repository.visibility != 'public' || matrix.pro-services == '' }}
-        uses: canonical/oci-factory/.github/actions/upload-rock@main
+        uses: canonical/oci-factory/.github/actions/upload-rock@feat/decrypt-before-upload
         with:
           artifact_name: ${{ matrix.artifact-name }}
           tags: ${{ matrix.tag }}
           name: ${{ matrix.name }}
-          registry: ghcr.io/${{ github.repository }}
+          registry: ghcr.io/${{ github.repository }}${{ matrix.pro-services != '' && '/pro' || '' }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          decrypt-passphrase: ${{ matrix.pro-artifact-passphrase == 'GITHUB_TOKEN' && needs.prepare.outputs.shared-key || secrets[matrix.pro-artifact-passphrase] }}
 
 
   upload-registries:
@@ -143,7 +144,7 @@ jobs:
           echo "aws-session-token=$session_token" >> $GITHUB_OUTPUT
 
       - name: Upload Rock to ECR
-        uses: canonical/oci-factory/.github/actions/upload-rock@main
+        uses: canonical/oci-factory/.github/actions/upload-rock@feat/decrypt-before-upload
         if: ${{ contains(matrix.registry-auth-method, 'ecr') }}
         with:
           artifact_name: ${{ matrix.artifact-name }}
@@ -152,9 +153,10 @@ jobs:
           registry: ${{ matrix.registry-uri }}
           username: AWS
           password: ${{ steps.get-ecr-token.outputs.aws-session-token }}
+          decrypt-passphrase: ${{ matrix.pro-artifact-passphrase == 'GITHUB_TOKEN' && needs.prepare.outputs.shared-key || secrets[matrix.pro-artifact-passphrase] }}
 
       - name: Upload Rock to Registry
-        uses: canonical/oci-factory/.github/actions/upload-rock@main
+        uses: canonical/oci-factory/.github/actions/upload-rock@feat/decrypt-before-upload
         if: matrix.registry-auth-method == 'basic'
         with:
           artifact_name: ${{ matrix.artifact-name }}
@@ -163,3 +165,4 @@ jobs:
           registry: ${{ matrix.registry-uri }}
           username: ${{ secrets[matrix.registry-auth-username] }}
           password: ${{ secrets[matrix.registry-auth-password] }}
+          decrypt-passphrase: ${{ matrix.pro-artifact-passphrase == 'GITHUB_TOKEN' && needs.prepare.outputs.shared-key || secrets[matrix.pro-artifact-passphrase] }}

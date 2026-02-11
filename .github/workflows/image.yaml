@@ -117,7 +117,7 @@ jobs:
           artifact_name: ${{ matrix.artifact-name }}
           tags: ${{ matrix.tag }}
           name: ${{ matrix.name }}
-          registry: ghcr.io/${{ github.repository }}${{ matrix.pro-services != '' && '/pro' || '' }}
+          registry: ghcr.io/${{ github.repository }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           decrypt-passphrase: ${{ matrix.pro-artifact-passphrase == 'GITHUB_TOKEN' && needs.prepare.outputs.shared-key || secrets[matrix.pro-artifact-passphrase] }}

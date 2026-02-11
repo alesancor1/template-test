@@ -47,12 +47,12 @@ jobs:
 
           # Use jq to iterate over the 'include' array
           echo "$build_matrix" | jq -c '.include[]' | while read -r row; do
-            artifact=$(echo "$row" | jq -r '.["artifact-name"] // "unknown"')
+            directory=$(echo "$row" | jq -r '.["directory"] // "unknown"')
             pro_services=$(echo "$row" | jq -r '.["pro-services"] // ""')
             run_tests=$(echo "$row" | jq -r '.["run-tests"] // "false"')
 
             if [[ -n "$pro_services" && "$run_tests" == "true" ]]; then
-              echo "::warning::Tests for Pro Services are currently not supported. Skipping tests for ${artifact}."
+              echo "::warning::Tests for Pro Services are currently not supported. Skipping tests for ${directory}."
             fi
           done
 
@@ -105,7 +105,7 @@ jobs:
       - name: Pre-Check Pro Enabled Rocks
         if: ${{ github.event.repository.visibility == 'public' && matrix.pro-services != '' }}
         run: |
-          echo "::warning::Uploading Pro enabled rocks to GHCR is not allowed for public repositories. Skipping upload for ${matrix.artifact-name}."
+          echo "::warning::Uploading Pro enabled rocks to GHCR is not allowed for public repositories."
 
       - name: Upload Rock to GHCR
         if: ${{ github.event.repository.visibility != 'public' || matrix.pro-services == '' }}
@@ -117,7 +117,6 @@ jobs:
           registry: ghcr.io/${{ github.repository }}${{ matrix.pro-services != '' && '/pro' || '' }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
 
   upload-registries:

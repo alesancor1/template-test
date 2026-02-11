@@ -71,6 +71,7 @@ jobs:
       rockcraft-test: ${{ matrix.run-tests }}
       pro-services: ${{ matrix.pro-services }}
     secrets:
+      source-github-token: ${{ secrets.REPO_CLONER_TOKEN }}
       pro-token: ${{ secrets[matrix.pro-token] }}
       pro-artifact-passphrase: ${{ matrix.pro-artifact-passphrase == 'GITHUB_TOKEN' && needs.prepare.outputs.shared-key || secrets[matrix.pro-artifact-passphrase] }}
 

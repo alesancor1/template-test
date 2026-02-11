@@ -39,8 +39,6 @@ jobs:
           echo "shared-token=$(sha256sum <<< "${{ secrets.GITHUB_TOKEN }}" | cut -d ' ' -f 1)" >> $GITHUB_OUTPUT
           echo "::add-mask::$shared-token"
 
-            # If ghcr-upload is true and there are pro rocks in upload matrix, output warning
- 
       # TODO: remove once the pro-feature is stable in rockcraft
       # Warn the user if using tests in a pro enabled build
       - name: Check Pro and Test Incompatibility

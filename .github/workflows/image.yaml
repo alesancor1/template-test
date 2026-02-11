@@ -38,7 +38,6 @@ jobs:
         run: |
           shared_token=$(sha256sum <<< "${{ secrets.GITHUB_TOKEN }}" | cut -d ' ' -f 1)
           echo "shared-token=$shared_token" >> $GITHUB_OUTPUT
-          echo "::add-mask::$shared_token"
 
       # TODO: remove once the pro-feature is stable in rockcraft
       # Warn the user if using tests in a pro enabled build

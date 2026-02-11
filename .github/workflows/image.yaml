@@ -99,8 +99,6 @@ jobs:
       fail-fast: false
     permissions:
       packages: write
-      actions: read
-      contents: read
     steps:
       - name: Pre-Check Pro Enabled Rocks
         if: ${{ github.event.repository.visibility == 'public' && matrix.pro-services != '' }}
@@ -154,7 +152,6 @@ jobs:
           registry: ${{ matrix.registry-uri }}
           username: AWS
           password: ${{ steps.get-ecr-token.outputs.aws-session-token }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Rock to Registry
         uses: canonical/oci-factory/.github/actions/upload-rock@main
@@ -166,4 +163,3 @@ jobs:
           registry: ${{ matrix.registry-uri }}
           username: ${{ secrets[matrix.registry-auth-username] }}
           password: ${{ secrets[matrix.registry-auth-password] }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -20,7 +20,21 @@ jobs:
 
       - name: Read .github/ci.yaml
         id: read-ci-config
-        uses: canonical/rocks-template-actions/actions/read-ci-config@v1
+        uses: canonical/rocks-template-actions/actions/read-ci-config@add-pro-config
+
+      # TODO: remove once the pro-feature is stable in rockcraft
+      - name: Check Pro and Test incompatibility
+        run: |
+          build_matrix=${{ steps.read-ci-config.outputs.build-matrix.include }}
+          for row in $(echo "${build_matrix}" | jq -c '.[]'); do
+            artifact=$(echo "${row}" | jq -r '.["artifact-name"]')
+            pro_services=$(echo "${row}" | jq -r '.["pro-services"]')
+            run_tests=$(echo "${row}" | jq -r '.["run-tests"]')
+            if [[ "${pro_services}" != "" && "${run_tests}" == "true" ]]; then
+              echo "::warning::Tests for Pro Rocks are currently not supported. Skipping tests for ${artifact}."
+              exit 1
+            fi
+          done
 
   get-runners:
     runs-on: ubuntu-latest
@@ -47,7 +61,7 @@ jobs:
   #     matrix: ${{ fromJSON(needs.read-config.outputs.build-matrix) }}
   #   uses: canonical/oci-factory-internal/.github/workflows/Build-Rock.yaml@main
   #   with:
-  #     rock-repo: ${{ github.repository }}
+  #     rock-repo: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
   #     rock-repo-commit: ${{ github.ref }}
   #     rockfile-directory: ${{ matrix.directory }}
   #     oci-archive-name: ${{ matrix.artifact-name }}
@@ -61,9 +75,9 @@ jobs:
     if: github.event.repository.visibility == 'public'
     strategy:
       matrix: ${{ fromJSON(needs.read-config.outputs.build-matrix) }}
-    uses: alesancor1/oci-factory/.github/workflows/Build-Rock.yaml@main
+    uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@main
     with:
-      rock-repo: ${{ github.repository }}
+      rock-repo: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
       rock-repo-commit: ${{ github.head_ref || github.ref_name }}
       rockfile-directory: ${{ matrix.directory }}
       oci-archive-name: ${{ matrix.artifact-name }}
@@ -71,9 +85,9 @@ jobs:
       rockcraft-test: ${{ matrix.run-tests }}
       pro-services: ${{ matrix.pro-services }}
     secrets:
-      pro-token: ${{ secrets.UBUNTU_PRO_TOKEN }}
-      pro-artifact-passphrase: test
-
+      pro-token: ${{ secrets[matrix.pro-token] }}
+      pro-artifact-passphrase: ${{ secrets[matrix.pro-artifact-passphrase] }}
+      
 
   test:
     needs: [read-config, build]
@@ -86,9 +100,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.read-config.outputs.build-matrix) }}
-    uses: alesancor1/oci-factory/.github/workflows/Test-Rock.yaml@main
+    uses: canonical/oci-factory/.github/workflows/Test-Rock.yaml@main
     with:
       oci-archive-name: ${{ matrix.artifact-name }}
     secrets:
-      pro-artifact-passphrase: test
-
+      pro-artifact-passphrase: ${{ secrets[matrix.pro-artifact-passphrase] }}

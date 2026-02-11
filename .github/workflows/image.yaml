@@ -105,6 +105,10 @@ jobs:
         if: ${{ github.event.repository.visibility == 'public' && matrix.pro-services != '' }}
         run: |
           echo "::warning::Uploading Pro enabled rocks to GHCR is not allowed for public repositories."
+      
+      - name: Redact the Passphrase in Logs
+        if: ${{ matrix.pro-artifact-passphrase == 'GITHUB_TOKEN' }}
+        run: echo "::add-mask::${{ needs.prepare.outputs.shared-key }}"
 
       - name: Upload Rock to GHCR
         if: ${{ github.event.repository.visibility != 'public' || matrix.pro-services == '' }}
@@ -130,6 +134,10 @@ jobs:
       matrix: ${{ fromJSON(needs.prepare.outputs.upload-matrix) }}
       fail-fast: false
     steps:
+      - name: Redact the Passphrase in Logs
+        if: ${{ matrix.pro-artifact-passphrase == 'GITHUB_TOKEN' }}
+        run: echo "::add-mask::${{ needs.prepare.outputs.shared-key }}"
+
       - name: Prepare ECR Session Token
         if: ${{ contains(matrix.registry-auth-method, 'ecr') }}
         id: get-ecr-token

@@ -61,7 +61,7 @@ jobs:
     needs: [prepare]
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.build-matrix) }}
-    uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@main
+    uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@feat/decrypt-before-upload
     with:
       rock-repo: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
       rock-repo-commit: ${{ github.head_ref || github.ref_name }}
@@ -81,7 +81,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.prepare.outputs.build-matrix) }}
-    uses: alesancor1/oci-factory/.github/workflows/Test-Rock.yaml@main
+    uses: alesancor1/oci-factory/.github/workflows/Test-Rock.yaml@feat/decrypt-before-upload
     with:
       oci-archive-name: ${{ matrix.artifact-name }}
     secrets:

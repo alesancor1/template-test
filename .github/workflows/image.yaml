@@ -43,7 +43,7 @@ jobs:
             run_tests=$(echo "$row" | jq -r '.["run-tests"] // "false"')
 
             if [[ -n "$pro_services" && "$run_tests" == "true" ]]; then
-              echo "::warning::Tests for Pro Services are currently not supported. Skipping tests for ${directory}."
+              echo "::warning::Tests for Pro Services are currently not supported. Rockcraft tests will be skipped for ${directory}."
             fi
           done
 
@@ -52,7 +52,7 @@ jobs:
     needs: [prepare]
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.build-matrix) }}
-    uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@main
+    uses: alesancor1/oci-factory/.github/workflows/Build-Rock.yaml@test-pro
     with:
       rock-repo: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
       rock-repo-commit: ${{ github.head_ref || github.ref_name }}
@@ -75,7 +75,6 @@ jobs:
     uses: canonical/oci-factory/.github/workflows/Test-Rock.yaml@main
     with:
       oci-archive-name: ${{ matrix.artifact-name }}
-      test-vulnerabilities: false
     secrets:
       pro-artifact-passphrase: ${{ secrets[matrix.pro-artifact-passphrase] }}
 

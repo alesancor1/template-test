@@ -52,7 +52,7 @@ jobs:
     needs: [prepare]
     strategy:
       matrix: ${{ fromJSON(needs.prepare.outputs.build-matrix) }}
-    uses: alesancor1/oci-factory/.github/workflows/Build-Rock.yaml@test-pro
+    uses: alesancor1/oci-factory/.github/workflows/Build-Rock.yaml@pro-test
     with:
       rock-repo: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
       rock-repo-commit: ${{ github.head_ref || github.ref_name }}
